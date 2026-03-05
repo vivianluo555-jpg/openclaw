@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PlusCircle, Loader2 } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -21,6 +22,8 @@ export function AnalyzeVideoModal(): React.ReactElement {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const locale = useLocale();
+  const isZh = locale === 'zh';
 
   const handleAnalyze = async () => {
     if (!url) {
@@ -67,9 +70,13 @@ export function AnalyzeVideoModal(): React.ReactElement {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>分析 YouTube 爆款视频</DialogTitle>
+          <DialogTitle>
+            {isZh ? '分析 YouTube 爆款视频' : 'Analyze YouTube Viral Video'}
+          </DialogTitle>
           <DialogDescription>
-            输入 YouTube 视频链接，Gemini 2.5 Flash 将自动提取字幕，生成黄金钩子、情绪曲线、留存策略、爆款公式等深度分析。
+            {isZh
+              ? '输入 YouTube 视频链接，Gemini 2.5 Flash 将自动提取字幕，生成黄金钩子、情绪曲线、留存策略、爆款公式等深度分析。'
+              : 'Enter a YouTube URL. Gemini 2.5 Flash will automatically extract the transcript and generate deep analysis including golden hooks, emotional arc, retention strategies, and viral formulas.'}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col space-y-4 py-4">

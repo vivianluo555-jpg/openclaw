@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useLocale } from "next-intl";
 
 type EmotionPoint = {
   timestampSeconds: number;
@@ -21,10 +22,11 @@ interface EmotionalChartProps {
 }
 
 export function EmotionalChart({ data }: EmotionalChartProps) {
+  const locale = useLocale();
   if (!data || data.length === 0) {
     return (
       <div className="h-[200px] w-full flex items-center justify-center bg-black/5 rounded-xl text-black/30 text-sm">
-        暂无情绪曲线数据
+        {locale === 'zh' ? '暂无情绪曲线数据' : 'No emotional arc data'}
       </div>
     );
   }

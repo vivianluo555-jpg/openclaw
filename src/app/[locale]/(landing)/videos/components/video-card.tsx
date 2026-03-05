@@ -12,6 +12,7 @@ interface VideoCardProps {
   styleCategory?: string | null;
   description?: string | null;
   duration?: number | null;
+  locale?: string;
 }
 
 function formatViews(views: number): string {
@@ -30,7 +31,9 @@ export function VideoCard({
   styleCategory,
   description,
   duration,
+  locale,
 }: VideoCardProps) {
+  const isZh = locale === 'zh';
   return (
     <Link href={`/videos/${id}`}>
       <div className="group bg-white rounded-2xl border border-black/5 overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-black/5 transition-all duration-300">
@@ -73,12 +76,16 @@ export function VideoCard({
             <div className="flex gap-2 flex-wrap">
               {contentCategory && (
                 <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest border border-black/10 px-2 py-0.5 rounded">
-                  {contentCategory === "format" ? "形式" : "故事"}
+                  {contentCategory === "format"
+                    ? (isZh ? "形式" : "Format")
+                    : (isZh ? "故事" : "Story")}
                 </span>
               )}
               {styleCategory && (
                 <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest border border-black/10 px-2 py-0.5 rounded">
-                  {styleCategory === "live_action" ? "真人" : "动画"}
+                  {styleCategory === "live_action"
+                    ? (isZh ? "真人" : "Live Action")
+                    : (isZh ? "动画" : "Animation")}
                 </span>
               )}
             </div>

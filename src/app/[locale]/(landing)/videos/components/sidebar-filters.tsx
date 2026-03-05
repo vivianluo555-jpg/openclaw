@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Layers, MonitorPlay, Flame, Zap } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { useLocale } from "next-intl";
 
 function FilterSection({
   title,
@@ -48,6 +49,8 @@ function FilterSection({
 
 export function SidebarFilters() {
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isZh = locale === 'zh';
   const content = searchParams.get("content") || "all";
   const ip = searchParams.get("ip") || "all";
   const style = searchParams.get("style") || "all";
@@ -70,19 +73,19 @@ export function SidebarFilters() {
   };
 
   const contentTypes = [
-    { value: "all", label: "全部形式" },
-    { value: "format", label: "形式类" },
-    { value: "story", label: "故事类" },
+    { value: "all", label: isZh ? "全部形式" : "All Types" },
+    { value: "format", label: isZh ? "形式类" : "Format" },
+    { value: "story", label: isZh ? "故事类" : "Story" },
   ];
 
   const styleTypes = [
-    { value: "all", label: "全部风格" },
-    { value: "live_action", label: "真人" },
-    { value: "animation", label: "动画" },
+    { value: "all", label: isZh ? "全部风格" : "All Styles" },
+    { value: "live_action", label: isZh ? "真人" : "Live Action" },
+    { value: "animation", label: isZh ? "动画" : "Animation" },
   ];
 
   const ipCategories = [
-    { value: "all", label: "全部 IP" },
+    { value: "all", label: isZh ? "全部 IP" : "All IPs" },
     { value: "kpop", label: "K-Pop" },
     { value: "celebrity", label: "Celebrity" },
     { value: "naruto", label: "Naruto" },
@@ -91,10 +94,9 @@ export function SidebarFilters() {
 
   return (
     <aside className="w-64 shrink-0 border-r border-black/5 bg-white p-6 flex flex-col gap-8 sticky top-0 h-screen overflow-y-auto hidden lg:flex">
-      {/* 筛选项从顶部开始，无需重复 logo */}
 
       <FilterSection
-        title="内容形式"
+        title={isZh ? "内容形式" : "Content Type"}
         icon={Layers}
         items={contentTypes}
         paramKey="content"
@@ -103,7 +105,7 @@ export function SidebarFilters() {
       />
 
       <FilterSection
-        title="风格分类"
+        title={isZh ? "风格分类" : "Style"}
         icon={MonitorPlay}
         items={styleTypes}
         paramKey="style"
@@ -112,7 +114,7 @@ export function SidebarFilters() {
       />
 
       <FilterSection
-        title="热门 IP"
+        title={isZh ? "热门 IP" : "Popular IP"}
         icon={Flame}
         items={ipCategories}
         paramKey="ip"

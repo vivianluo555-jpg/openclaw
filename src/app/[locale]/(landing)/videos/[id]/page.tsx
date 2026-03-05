@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 import Link from 'next/link';
+import { getLocale } from 'next-intl/server';
 import {
   ArrowLeft,
   Clock,
@@ -31,6 +32,8 @@ export default async function VideoBreakdownPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const locale = await getLocale();
+  const isZh = locale === 'zh';
 
   const videoRecord = await db()
     .select()
@@ -79,7 +82,7 @@ export default async function VideoBreakdownPage({
           className="inline-flex items-center gap-2 text-sm font-medium text-black/40 hover:text-black transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          返回爆款库
+          {isZh ? '返回爆款库' : 'Back to Library'}
         </Link>
       </div>
 
@@ -125,12 +128,16 @@ export default async function VideoBreakdownPage({
                 <div className="flex flex-wrap gap-2 mb-5">
                   {videoRecord.contentCategory && (
                     <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest border border-white/20 px-2.5 py-1 rounded">
-                      {videoRecord.contentCategory === 'format' ? '形式类' : '故事类'}
+                      {videoRecord.contentCategory === 'format'
+                        ? (isZh ? '形式类' : 'Format')
+                        : (isZh ? '故事类' : 'Story')}
                     </span>
                   )}
                   {videoRecord.styleCategory && (
                     <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest border border-white/20 px-2.5 py-1 rounded">
-                      {videoRecord.styleCategory === 'live_action' ? '真人' : '动画'}
+                      {videoRecord.styleCategory === 'live_action'
+                        ? (isZh ? '真人' : 'Live Action')
+                        : (isZh ? '动画' : 'Animation')}
                     </span>
                   )}
                   {videoRecord.ipCategory && (
@@ -150,7 +157,9 @@ export default async function VideoBreakdownPage({
                 {/* Replicability */}
                 {replicability > 0 && (
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">可复制指数</span>
+                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                      {isZh ? '可复制指数' : 'Replicability'}
+                    </span>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((n) => (
                         <Star key={n} className={`w-4 h-4 ${n <= replicability ? 'text-emerald-400 fill-emerald-400' : 'text-white/20'}`} />
@@ -163,7 +172,7 @@ export default async function VideoBreakdownPage({
                 {breakdownRecord?.viralFormula && (
                   <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
                     <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                      <Repeat className="w-3 h-3" /> 爆款公式
+                      <Repeat className="w-3 h-3" /> {isZh ? '爆款公式' : 'Viral Formula'}
                     </p>
                     <p className="text-sm text-emerald-300 font-medium leading-relaxed">{breakdownRecord.viralFormula}</p>
                   </div>
@@ -183,24 +192,30 @@ export default async function VideoBreakdownPage({
             {storyStructure && (storyStructure.beginning || storyStructure.conflictAndTurning || storyStructure.ending) && (
               <section className="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-5 flex items-center gap-2">
-                  <BookMarked className="w-3.5 h-3.5 text-indigo-500" /> 故事结构分析
+                  <BookMarked className="w-3.5 h-3.5 text-indigo-500" /> {isZh ? '故事结构分析' : 'Story Structure Analysis'}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {storyStructure.beginning && (
                     <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
-                      <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2">① 开端</p>
+                      <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2">
+                        {isZh ? '① 开端' : '① Beginning'}
+                      </p>
                       <p className="text-sm leading-relaxed text-indigo-900">{storyStructure.beginning}</p>
                     </div>
                   )}
                   {storyStructure.conflictAndTurning && (
                     <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
-                      <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-2">② 冲突与转折</p>
+                      <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-2">
+                        {isZh ? '② 冲突与转折' : '② Conflict & Turning Point'}
+                      </p>
                       <p className="text-sm leading-relaxed text-orange-900">{storyStructure.conflictAndTurning}</p>
                     </div>
                   )}
                   {storyStructure.ending && (
                     <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-                      <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-2">③ 结局</p>
+                      <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-2">
+                        {isZh ? '③ 结局' : '③ Ending'}
+                      </p>
                       <p className="text-sm leading-relaxed text-emerald-900">{storyStructure.ending}</p>
                     </div>
                   )}
@@ -212,7 +227,7 @@ export default async function VideoBreakdownPage({
             {breakdownRecord.hook && (
               <section className="bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <Magnet className="w-3.5 h-3.5 text-red-500" /> 黄金开头 · 3秒钩子
+                  <Magnet className="w-3.5 h-3.5 text-red-500" /> {isZh ? '黄金开头 · 3秒钩子' : 'Golden Hook · 3s'}
                 </h3>
                 <div className="p-5 bg-red-50 rounded-2xl border border-red-100">
                   <p className="text-sm leading-relaxed text-red-900 font-medium">{breakdownRecord.hook}</p>
@@ -224,7 +239,7 @@ export default async function VideoBreakdownPage({
             {breakdownRecord.retentionStrategy && (
               <section className="bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <Target className="w-3.5 h-3.5 text-blue-500" /> 留存策略
+                  <Target className="w-3.5 h-3.5 text-blue-500" /> {isZh ? '留存策略' : 'Retention Strategy'}
                 </h3>
                 <div className="p-5 bg-blue-50 rounded-2xl border border-blue-100">
                   <p className="text-sm leading-relaxed text-blue-900 whitespace-pre-line">{breakdownRecord.retentionStrategy}</p>
@@ -236,7 +251,7 @@ export default async function VideoBreakdownPage({
             {breakdownRecord.coreLogic && (
               <section className="bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <Brain className="w-3.5 h-3.5 text-purple-500" /> 底层爆火逻辑
+                  <Brain className="w-3.5 h-3.5 text-purple-500" /> {isZh ? '底层爆火逻辑' : 'Core Viral Logic'}
                 </h3>
                 <div className="p-5 bg-purple-50 rounded-2xl border border-purple-100">
                   <p className="text-sm leading-relaxed text-purple-900 whitespace-pre-line">{breakdownRecord.coreLogic}</p>
@@ -248,7 +263,7 @@ export default async function VideoBreakdownPage({
             {viralElementsData.length > 0 && (
               <section className="bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <Tag className="w-3.5 h-3.5 text-pink-500" /> 爆款元素标签
+                  <Tag className="w-3.5 h-3.5 text-pink-500" /> {isZh ? '爆款元素标签' : 'Viral Element Tags'}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {viralElementsData.map((tag: string, idx: number) => (
@@ -262,7 +277,7 @@ export default async function VideoBreakdownPage({
             {hookElementsData.length > 0 && (
               <section className="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 text-orange-500" /> 钩子时间线
+                  <Clock className="w-3.5 h-3.5 text-orange-500" /> {isZh ? '钩子时间线' : 'Hook Timeline'}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {hookElementsData.map((hook: any, idx: number) => (
@@ -284,7 +299,7 @@ export default async function VideoBreakdownPage({
             {keyTakeawaysData.length > 0 && (
               <section className="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <BookOpen className="w-3.5 h-3.5 text-pink-500" /> 核心洞察 · 可学习要点
+                  <BookOpen className="w-3.5 h-3.5 text-pink-500" /> {isZh ? '核心洞察 · 可学习要点' : 'Key Insights & Takeaways'}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {keyTakeawaysData.map((takeaway: string, idx: number) => (
@@ -301,7 +316,7 @@ export default async function VideoBreakdownPage({
             {breakdownRecord.pacingAnalysis && (
               <section className="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <Zap className="w-3.5 h-3.5 text-yellow-500" /> 节奏分析
+                  <Zap className="w-3.5 h-3.5 text-yellow-500" /> {isZh ? '节奏分析' : 'Pacing Analysis'}
                 </h3>
                 <p className="text-sm leading-relaxed text-black/70 whitespace-pre-line">{breakdownRecord.pacingAnalysis}</p>
               </section>
@@ -331,7 +346,7 @@ export default async function VideoBreakdownPage({
               return (
                 <section className="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                   <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-5 flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-violet-500" /> 逐镜头复刻脚本 · Sora 级导演模板
+                    <Sparkles className="w-3.5 h-3.5 text-violet-500" /> {isZh ? '逐镜头复刻脚本 · Sora 级导演模板' : 'Shot-by-Shot Replication Script · Sora Director Template'}
                   </h3>
                   <div className="overflow-x-auto rounded-2xl border border-black/8">
                     <table className="w-full text-sm border-collapse">
@@ -366,7 +381,7 @@ export default async function VideoBreakdownPage({
             {breakdownRecord.scriptContent && (
               <section className="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-black/5">
                 <h3 className="text-[11px] font-bold text-black/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <PlayCircle className="w-3.5 h-3.5 text-blue-500" /> 完整脚本
+                  <PlayCircle className="w-3.5 h-3.5 text-blue-500" /> {isZh ? '完整脚本' : 'Full Transcript'}
                 </h3>
                 <div className="bg-gray-50 rounded-2xl p-6 border border-black/5 max-h-[400px] overflow-y-auto">
                   {breakdownRecord.scriptContent.split('\n').map((paragraph: string, i: number) => (
@@ -382,8 +397,14 @@ export default async function VideoBreakdownPage({
             <div className="w-16 h-16 bg-black/5 rounded-full flex items-center justify-center mx-auto mb-6">
               <Zap className="w-8 h-8 text-black/20" />
             </div>
-            <h3 className="text-xl font-bold mb-2">暂无分析数据</h3>
-            <p className="text-black/40 text-sm max-w-md mx-auto">此视频还没有 AI 分析数据，请返回视频库重新提交分析。</p>
+            <h3 className="text-xl font-bold mb-2">
+              {isZh ? '暂无分析数据' : 'No Analysis Data'}
+            </h3>
+            <p className="text-black/40 text-sm max-w-md mx-auto">
+              {isZh
+                ? '此视频还没有 AI 分析数据，请返回视频库重新提交分析。'
+                : 'This video has no AI analysis data yet. Please return to the library and re-submit for analysis.'}
+            </p>
           </div>
         )}
       </div>

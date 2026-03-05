@@ -57,8 +57,14 @@ export default async function VideosGalleryPage({
       <main className="flex-1 p-8">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight mb-2">爆款拆解库</h2>
-            <p className="text-black/50 text-sm">深度分析 YouTube 千万级播放视频的底层逻辑</p>
+            <h2 className="text-3xl font-bold tracking-tight mb-2">
+              {locale === 'zh' ? '爆款拆解库' : 'Viral Breakdown Library'}
+            </h2>
+            <p className="text-black/50 text-sm">
+              {locale === 'zh'
+                ? '深度分析 YouTube 千万级播放视频的底层逻辑'
+                : "Deep analysis of the underlying logic behind YouTube's top viral videos"}
+            </p>
           </div>
           <div className="flex items-center gap-4">
             <Suspense fallback={null}>
@@ -77,8 +83,14 @@ export default async function VideosGalleryPage({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold mb-2">暂无视频</h3>
-            <p className="text-black/40 text-sm">调整筛选条件，或导入新视频开始分析</p>
+            <h3 className="text-xl font-bold mb-2">
+              {locale === 'zh' ? '暂无视频' : 'No Videos'}
+            </h3>
+            <p className="text-black/40 text-sm">
+              {locale === 'zh'
+                ? '调整筛选条件，或导入新视频开始分析'
+                : 'Adjust the filters or import a new video to start analysis'}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -94,6 +106,7 @@ export default async function VideosGalleryPage({
                 styleCategory={vid.styleCategory}
                 description={vid.description}
                 duration={vid.duration}
+                locale={locale}
               />
             ))}
           </div>
